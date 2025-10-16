@@ -2,8 +2,34 @@ from django.contrib import admin
 from .models import Conference, Submission
 
 # Enregistrer uniquement Submission manuellement
-admin.site.register(Submission)
+#admin.site.register(Submission)
 #admin.site.register(Conference)
+
+
+class SubmissionStackedInline(admin.StackedInline):
+    model = Submission
+    extra = 1  # nombre de formulaires vides affichés par défaut
+    fields = (
+        'title',
+        'abstract',
+        'status',
+        'payed',
+        'submission_id',
+        'submission_date',
+    )
+    readonly_fields = ('submission_id', 'submission_date')  # champs lecture seule
+    show_change_link = True  # optionnel : lien pour ouvrir la soumission complète
+
+
+# ✅ Variante 2 : Inline tabulaire (Tableau horizontal)
+class SubmissionTabularInline(admin.TabularInline):
+    model = Submission
+    extra = 1
+    fields = ('title', 'status', 'payed')  # supprimer 'user'
+    #readonly_fields = ('status',)  # si tu veux
+    show_change_link = True
+
+
 
 
 class SubbmissionInline(admin.TabularInline):
@@ -14,7 +40,7 @@ class SubbmissionInline(admin.TabularInline):
 #stackedInline avec cette plus simple    
 
 # Personnalisation de l'interface admin pour Conference
-@admin.register(Conference)
+"""@admin.register(Conference)
 class AdminPerso(admin.ModelAdmin):
     list_display = ('name', 'theme', 'start_date', 'end_date','duration')
     ordering = ('start_date',)
@@ -42,6 +68,82 @@ class AdminPerso(admin.ModelAdmin):
     
     inlines = [SubbmissionInline]
 
+"""
+
+
+@admin.register(Conference)
+class AdminPerso(admin.ModelAdmin):
+    list_display = ('name', 'theme', 'start_date', 'end_date', 'duration')
+    ordering = ('start_date',)
+    search_fields = ('name',)
+    list_filter = ('theme', 'location', 'start_date', 'end_date')
+
+    fieldsets = (
+        ("Informations générales", {
+            'fields': ('name', 'description', 'location', 'theme')
+        }),
+        ("Logistics", {
+            'fields': ('start_date', 'end_date')
+        }),
+    )
+
+    readonly_fields = ('conference_id',)
+
+    # Méthode pour calculer la durée d’une conférence
+    def duration(self, obj):
+        if obj.start_date and obj.end_date:
+            return obj.end_date - obj.start_date
+        else:
+            return "RAS"
+    duration.short_description = "Duration (Days)"
+
+    # Affiche la hiérarchie par date
+    date_hierarchy = 'start_date'
+
+        # Ajout de l’inline pour afficher les soumissions liées à la conférence
+    #inlines = [SubmissionStackedInline]
+    inlines = [SubmissionTabularInline] #  Version tabulaire
+
+
+# Personnalisation de l'affichage de Submission
+@admin.register(Submission)
+class SubmissionAdmin(admin.ModelAdmin):
+    # Colonnes affichées dans la liste
+    list_display = ('title', 'status', 'get_user', 'conference', 'submission_date', 'payed', 'short_abstract')
+    
+    # Champs modifiables directement depuis la liste
+    list_editable = ('status', 'payed')
+    
+    # Filtres dans la liste
+    list_filter = ('status', 'payed', 'conference', 'submission_date')
+    
+    # Recherche
+    search_fields = ('title', 'keywords', 'userid__username')
+    
+    # Lecture seule dans le formulaire d'édition
+    readonly_fields = ('submission_id', 'submission_date')
+    
+    # Organisation du formulaire par sections
+    fieldsets = (
+        ('Infos générales', {
+            'fields': ('submission_id', 'title', 'abstract', 'keywords')
+        }),
+        ('Fichier et conférence', {
+            'fields': ('paper', 'conference')
+        }),
+        ('Suivi', {
+            'fields': ('status', 'payed', 'submission_date', 'userid')
+        }),
+    )
+    
+    # Méthodes personnalisées
+    def get_user(self, obj):
+        return obj.userid
+    get_user.short_description = 'User'
+    
+    def short_abstract(self, obj):
+        return (obj.abstract[:50] + "...") if len(obj.abstract) > 50 else obj.abstract
+    short_abstract.short_description = 'Résumé'
 
 
 
