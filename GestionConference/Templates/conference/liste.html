@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liste des conférences</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --success-color: #2ecc71;
+            --text-color: #333;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        h1 {
+            color: var(--secondary-color);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        .conference-count {
+            background: var(--primary-color);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: inline-block;
+        }
+        
+        .conferences-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .conference-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 25px;
+            transition: var(--transition);
+            border-left: 4px solid var(--primary-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .conference-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .conference-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        }
+        
+        .conference-title {
+            font-size: 1.4rem;
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .conference-location {
+            display: flex;
+            align-items: center;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+        
+        .conference-location::before {
+            content: '📍';
+            margin-right: 8px;
+        }
+        
+        .conference-theme {
+            display: inline-block;
+            background: var(--light-color);
+            color: var(--secondary-color);
+            padding: 3px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-bottom: 15px;
+        }
+        
+        .conference-dates {
+            display: flex;
+            justify-content: space-between;
+            background: var(--light-color);
+            padding: 10px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .date-item {
+            text-align: center;
+        }
+        
+        .date-label {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            margin-bottom: 3px;
+        }
+        
+        .date-value {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+        
+        .card-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .view-btn {
+            background: var(--primary-color);
+            color: white;
+            padding: 8px 20px;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .view-btn:hover {
+            background: var(--secondary-color);
+            transform: translateX(3px);
+        }
+        
+        .view-btn::after {
+            content: '→';
+            margin-left: 8px;
+            transition: var(--transition);
+        }
+        
+        .view-btn:hover::after {
+            transform: translateX(3px);
+        }
+        
+        .conference-meta {
+            font-size: 0.8rem;
+            color: #95a5a6;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            grid-column: 1 / -1;
+        }
+        
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #bdc3c7;
+        }
+        
+        .empty-title {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+        }
+        
+        .empty-text {
+            color: #7f8c8d;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--secondary-color);
+        }
+        
+        .filter-select, .filter-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-family: inherit;
+        }
+        
+        @media (max-width: 768px) {
+            .conferences-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .filters {
+                flex-direction: column;
+            }
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            grid-column: 1 / -1;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Liste des conférences</h1>
+            <p class="subtitle">Découvrez toutes les conférences disponibles</p>
+            <div class="conference-count">{{ liste|length }} conférence{{ liste|length|pluralize }}</div>
+        </div>
+        
+        <div class="filters">
+            <div class="filter-group">
+                <label class="filter-label" for="theme-filter">Filtrer par thème</label>
+                <select class="filter-select" id="theme-filter">
+                    <option value="">Tous les thèmes</option>
+                    <!-- Ajouter les options de thème dynamiquement -->
+                </select>
+            </div>
+            <div class="filter-group">
+                <label class="filter-label" for="location-filter">Filtrer par lieu</label>
+                <input type="text" class="filter-input" id="location-filter" placeholder="Entrez un lieu...">
+            </div>
+        </div>
+        
+        <div class="conferences-grid">
+            {% if liste %}
+                {% for conference in liste %}
+                <div class="conference-card">
+                    <h3 class="conference-title">{{ conference.name }}</h3>
+                    
+                    <div class="conference-location">{{ conference.location }}</div>
+                    
+                    <div class="conference-theme">{{ conference.get_theme_display }}</div>
+                    
+                    <div class="conference-dates">
+                        <div class="date-item">
+                            <div class="date-label">Début</div>
+                            <div class="date-value">{{ conference.start_date }}</div>
+                        </div>
+                        <div class="date-item">
+                            <div class="date-label">Fin</div>
+                            <div class="date-value">{{ conference.end_date }}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="card-actions">
+                        <a href="{% url 'Conference_detail' pk=conference.pk %}" class="view-btn">Voir détails</a>
+                        <div class="conference-meta">
+                            Créée le {{ conference.created_at|date:"d/m/Y" }}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">📅</div>
+                    <h3 class="empty-title">Aucune conférence disponible</h3>
+                    <p class="empty-text">Il n'y a actuellement aucune conférence à afficher. Revenez plus tard pour découvrir de nouveaux événements.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        // Script simple pour la recherche/filtrage
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeFilter = document.getElementById('theme-filter');
+            const locationFilter = document.getElementById('location-filter');
+            const conferenceCards = document.querySelectorAll('.conference-card');
+            
+            function filterConferences() {
+                const themeValue = themeFilter.value.toLowerCase();
+                const locationValue = locationFilter.value.toLowerCase();
+                
+                conferenceCards.forEach(card => {
+                    const theme = card.querySelector('.conference-theme').textContent.toLowerCase();
+                    const location = card.querySelector('.conference-location').textContent.toLowerCase();
+                    
+                    const themeMatch = !themeValue || theme.includes(themeValue);
+                    const locationMatch = !locationValue || location.includes(locationValue);
+                    
+                    if (themeMatch && locationMatch) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+            
+            themeFilter.addEventListener('change', filterConferences);
+            locationFilter.addEventListener('input', filterConferences);
+        });
+    </script>
+</body>
+</html>

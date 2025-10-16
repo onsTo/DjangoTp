@@ -6,8 +6,8 @@ from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-
-
+from django.contrib import admin
+from .models import Submission
 
 def validate_keywords(value):
         # Séparer les mots-clés par des virgules 
@@ -85,3 +85,6 @@ class Submission(models.Model):
         submissions_today = Submission.objects.filter(userid=self.userid, submission_date=today).exclude(pk=self.pk).count()
         if submissions_today >= 3:
             raise ValidationError("Vous avez déjà atteint le nombre maximum de 3 soumissions pour aujourd'hui.")
+
+
+    
