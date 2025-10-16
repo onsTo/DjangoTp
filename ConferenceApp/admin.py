@@ -1,5 +1,7 @@
 from django.contrib import admin
-from .models import Conference, Submission
+from .models import Conference
+from .models import Submission
+
 
 # Enregistrer uniquement Submission manuellement
 #admin.site.register(Submission)
@@ -21,7 +23,7 @@ class SubmissionStackedInline(admin.StackedInline):
     show_change_link = True  # optionnel : lien pour ouvrir la soumission complète
 
 
-# ✅ Variante 2 : Inline tabulaire (Tableau horizontal)
+# Variante 2 : Inline tabulaire (Tableau horizontal)
 class SubmissionTabularInline(admin.TabularInline):
     model = Submission
     extra = 1
@@ -36,8 +38,7 @@ class SubbmissionInline(admin.TabularInline):
     model = Submission
     extra = 1  # Nombre de formulaires supplémentaires à afficher
     readonly_fields = ('submission_id',)  # Rendre le champ submission_id en lecture seule
-
-#stackedInline avec cette plus simple    
+    
 
 # Personnalisation de l'interface admin pour Conference
 """@admin.register(Conference)
@@ -104,9 +105,14 @@ class AdminPerso(admin.ModelAdmin):
     #inlines = [SubmissionStackedInline]
     inlines = [SubmissionTabularInline] #  Version tabulaire
 
+@admin.action(description="Marquer comme payée")
+def mark_as_payed(modeladmin, request, queryset):
+    queryset.update(payed=True)
 
-# Personnalisation de l'affichage de Submission
-@admin.register(Submission)
+@admin.action(description="Marquer comme acceptée")
+def mark_as_accepted(modeladmin, request, queryset):
+    queryset.update(status="Accepted")
+
 class SubmissionAdmin(admin.ModelAdmin):
     # Colonnes affichées dans la liste
     list_display = ('title', 'status', 'get_user', 'conference', 'submission_date', 'payed', 'short_abstract')
@@ -135,6 +141,8 @@ class SubmissionAdmin(admin.ModelAdmin):
             'fields': ('status', 'payed', 'submission_date', 'userid')
         }),
     )
+    # Actions personnalisées pour make payed et make accepted
+    actions = [mark_as_payed,mark_as_accepted]
     
     # Méthodes personnalisées
     def get_user(self, obj):
@@ -144,6 +152,9 @@ class SubmissionAdmin(admin.ModelAdmin):
     def short_abstract(self, obj):
         return (obj.abstract[:50] + "...") if len(obj.abstract) > 50 else obj.abstract
     short_abstract.short_description = 'Résumé'
+
+admin.site.register(Submission, SubmissionAdmin)
+
 
 
 
