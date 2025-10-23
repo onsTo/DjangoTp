@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supprimer la conférence</title>
+    <style>
+        :root {
+            --primary-color: #e74c3c;
+            --primary-hover: #c0392b;
+            --secondary-color: #3498db;
+            --secondary-hover: #2980b9;
+            --text-color: #333;
+            --light-gray: #f5f5f5;
+            --border-color: #ddd;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .confirmation-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 30px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .confirmation-card:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .confirmation-icon {
+            font-size: 48px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .conf-name {
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 20px;
+            margin: 15px 0;
+            padding: 10px;
+            background-color: rgba(231, 76, 60, 0.1);
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .warning-text {
+            color: #e67e22;
+            font-weight: 500;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .warning-text i {
+            font-size: 18px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            min-width: 120px;
+        }
+
+        .btn-danger {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        .details-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            text-align: left;
+        }
+
+        .details-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-color);
+        }
+
+        .details-list {
+            list-style-type: none;
+            margin-bottom: 15px;
+        }
+
+        .details-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+        }
+
+        .details-list li:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 500;
+            min-width: 120px;
+        }
+
+        @media (max-width: 480px) {
+            .confirmation-card {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="confirmation-card">
+            <div class="confirmation-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            
+            <h1>Suppression de la conférence</h1>
+            
+            <p>Voulez-vous vraiment supprimer la conférence suivante ?</p>
+            
+            <div class="conf-name">{{ object.name }}</div>  <!-- nom du conference -->
+            
+            <div class="warning-text">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>Cette action est irréversible</span>
+            </div>
+            
+            <form method="post" action="">
+                {% csrf_token %}
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash-alt"></i>
+                        Oui, supprimer
+                    </button>
+                    <a href="{% url 'Conferences_list' %}" class="btn btn-secondary">
+                        <i class="fas fa-times"></i>
+                        Annuler
+                    </a>
+                </div>
+            </form>
+            
+            <div class="details-section">
+                <div class="details-title">Détails de la conférence :</div>
+                <ul class="details-list">
+                    <li>
+                        <span class="detail-label">Nom :</span>
+                        <span>{{ object.name }}</span>
+                    </li>
+                    <li>
+                        <span class="detail-label">Date :</span>
+                        <span>15 Novembre 2023</span>
+                    </li>
+                    <li>
+                        <span class="detail-label">Lieu :</span>
+                        <span>Paris, France</span>
+                    </li>
+                    <li>
+                        <span class="detail-label">Participants :</span>
+                        <span>250 inscrits</span>
+                    </li>
+                </ul>
+                <p><small><i class="fas fa-info-circle"></i> Toutes les données associées à cette conférence seront définitivement supprimées.</small></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animation d'entrée
+        document.addEventListener('DOMContentLoaded', function() {
+            const card = document.querySelector('.confirmation-card');
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            
+            setTimeout(() => {
+                card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100);
+            
+            // Confirmation supplémentaire pour le bouton de suppression
+            const deleteBtn = document.querySelector('.btn-danger');
+            deleteBtn.addEventListener('click', function(e) {
+                const confirmed = confirm('Êtes-vous ABSOLUMENT sûr de vouloir supprimer cette conférence ? Cette action ne peut pas être annulée.');
+                if (!confirmed) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

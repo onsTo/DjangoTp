@@ -7,7 +7,7 @@ from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.contrib import admin
-from .models import Submission
+#from .models import Submission
 
 def validate_keywords(value):
         # Séparer les mots-clés par des virgules 

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if view.object.pk %}
+<h2>Modifier une conférence</h2>
+{% else %}
+<h2>Ajouter une conférence</h2>
+{% endif %}
+
+<form method="post" action="">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" >Enregistrer</button>
+</form>
+{% endblock %}
