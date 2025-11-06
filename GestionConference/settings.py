@@ -128,3 +128,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'UserApp.User' #pour dire a django d'utiliser notre modèle personnalisé pour l'authentification / ecraser
 LOGIN_REDIRECT_URL = "Conferences_list"  #redirection après login
 LOGOUT_REDIRECT_URL = "login"  #redirection après logout
+
+LOGIN_URL = 'login' # bech ki ybada mouch connecter  wyhb yodkel lil update delete add(ena ndefini chnua fil view) mte3 haja yhezou lil login

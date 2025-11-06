@@ -7,13 +7,15 @@
         <p class="subtitle">Découvrez toutes les conférences disponibles</p>
         <div class="conference-count">{{ liste|length }} conférence{{ liste|length|pluralize }}</div>
     </div>
-
+    
+{% if user.is_authenticated and user.role == "commitee" %}
     <div style="margin-bottom: 20px;">
         <a href="{% url 'Conference_add' %}" class="btn-elegant">
             <div class="btn-icon">+</div>
             <span>Ajouter conférence</span>
         </a>
     </div>
+    {% endif %}
 
     <div class="filters">
         <div class="filter-group">
@@ -52,8 +54,14 @@
                 <div class="card-actions" style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
                     <div style="display: flex; gap: 10px;">
                         <a href="{% url 'Conference_detail' pk=conference.pk %}" class="btn btn-view btn-bleu">Voir détails</a>
+
+                        <!-- Afficher les boutons Modifier et Supprimer uniquement pour les utilisateurs connectés avec le rôle "commitee" -->
+                        {% if user.is_authenticated and user.role == "commitee" %}
                         <a href="{% url 'Conference_edit' pk=conference.pk %}" class="btn btn-edit btn-vert">Modifier</a>
                         <a href="{% url 'Conference_delete' pk=conference.pk %}" class="btn btn-delete">Supprimer</a>
+                        {% endif %}
+
+
                     </div>
                     <div class="conference-meta" style="font-size: 0.9em; color: #666;">
                         Créée le {{ conference.created_at|date:"d/m/Y" }}
