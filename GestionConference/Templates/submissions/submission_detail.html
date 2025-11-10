@@ -1,0 +1,18 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Détail de la soumission</h1>
+
+    <p><strong>ID:</strong> {{ object.submission_id }}</p>
+    <p><strong>Titre:</strong> {{ object.title }}</p>
+    <p><strong>Résumé:</strong> {{ object.abstract }}</p>
+    <p><strong>Mots-clés:</strong> {{ object.keywords }}</p>
+    <p><strong>Statut:</strong> {{ object.status }}</p>
+    <p><strong>Conférence:</strong> {{ object.conference.name }}</p>
+    <p><strong>Auteur:</strong> {{ object.userid.username }}</p>
+    
+    <a href="{{ object.paper.url }}" class="btn btn-download" download>Télécharger le PDF</a>
+</div>
+{% endblock %}

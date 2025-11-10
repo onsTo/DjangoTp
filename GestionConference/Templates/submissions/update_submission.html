@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Modifier la soumission : {{ object.title }}</h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+        <a href="{% url 'list_submissions' object.conference.pk %}" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
+{% endblock %}

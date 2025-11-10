@@ -60,7 +60,13 @@
                         <a href="{% url 'Conference_edit' pk=conference.pk %}" class="btn btn-edit btn-vert">Modifier</a>
                         <a href="{% url 'Conference_delete' pk=conference.pk %}" class="btn btn-delete">Supprimer</a>
                         {% endif %}
-
+                                            {% if user.is_authenticated %}
+                    <div style="display: flex; gap: 10px; margin-top: 5px;">
+                        <a href="{% url 'list_submissions' conference_id=conference.pk %}" class="btn btn-secondary">
+                            Voir les soumissions
+                        </a>
+                    </div>
+                    {% endif %}
 
                     </div>
                     <div class="conference-meta" style="font-size: 0.9em; color: #666;">
