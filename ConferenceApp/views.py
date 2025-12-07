@@ -10,10 +10,12 @@ from django.core.exceptions import PermissionDenied
 
 
 # Create your views here.
+#vue fonctionnelle
 def all_conferences(request):
     conferences = Conference.objects.all()
     return render(request, 'conference/liste.html', {'conferences_liste': conferences})
 
+#vue générique ListView
 class ConfernceList(ListView):
     model =Conference
     context_object_name = 'liste'
@@ -93,6 +95,7 @@ class AddSubmissionView(CreateView):
 
     def get_success_url(self):
         return reverse_lazy('list_submissions', kwargs={'conference_id': self.object.conference.pk})
+        
 class UpdateSubmissionView(UpdateView):
     model = Submission
     fields = ['title', 'abstract', 'keywords', 'paper', 'status', 'payed']

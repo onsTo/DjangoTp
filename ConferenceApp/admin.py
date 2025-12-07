@@ -105,6 +105,9 @@ class AdminPerso(admin.ModelAdmin):
     #inlines = [SubmissionStackedInline]
     inlines = [SubmissionTabularInline] #  Version tabulaire
 
+
+
+
 @admin.action(description="Marquer comme payée")
 def mark_as_payed(modeladmin, request, queryset):
     queryset.update(payed=True)
@@ -112,6 +115,14 @@ def mark_as_payed(modeladmin, request, queryset):
 @admin.action(description="Marquer comme acceptée")
 def mark_as_accepted(modeladmin, request, queryset):
     queryset.update(status="Accepted")
+
+
+
+
+
+
+
+
 
 class SubmissionAdmin(admin.ModelAdmin):
     # Colonnes affichées dans la liste

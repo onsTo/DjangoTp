@@ -37,11 +37,48 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'django_filters',
     #----Pour faire le lien entre les applications et le projet principal---------------
+    'rest_framework_simplejwt',
     'UserApp',
     'ConferenceApp',
     'SessionApp',
+    'sessionAppApi',
+    'securityConfigApp',
+    
+
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
+
+    # Authentification JWT
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+
+    # Permissions par défaut
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
+
+#creation des tokens JWT
+from datetime import timedelta 
+SIMPLE_JWT = { 
+'USER_ID_FIELD': 'userid', 
+'USER_ID_CLAIM': 'userid', 
+'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5), 
+'ALGORITHM': 'HS256', 
+# clé secrète (utilise la même que Django SECRET_KEY ou une autre forte) 
+'SIGNING_KEY': SECRET_KEY, 
+'AUTH_HEADER_TYPES': ('Bearer',), 
+'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',), } 
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
